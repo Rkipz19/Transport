@@ -1,7 +1,7 @@
 <?php
 
 function classAutoLoader($classname){
-    $directories = ["classes","contents","forms","includes"];
+    $directories = ["classes","contents","forms","processes"];
 
     foreach($directories as $directory){
         $filename = dirname(__FILE__) . DIRECTORY_SEPARATOR . $directory . DIRECTORY_SEPARATOR . $classname . ".php";
@@ -14,9 +14,7 @@ function classAutoLoader($classname){
 spl_autoload_register('classAutoLoader');
 
 $Objlayout = new layout();
-$Objform = new signup();
-$Objlogin = new login();
-$Objverify = new verify();
-$Objpage = new page();
 $Objpagecont = new pagecontent();
+$ObjUserForm = new userForms();
+$ObjProcesses = new process();
 
