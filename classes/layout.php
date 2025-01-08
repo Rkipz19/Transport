@@ -1,6 +1,6 @@
 <?php
 class layout{
-    public function header($title){
+    public function header(){
         ?>
 <!DOCTYPE html>
 <html>
@@ -19,6 +19,7 @@ class layout{
     public function footer(){
         ?>
        <!--Bootstrap bundle with popper-->
+<script src = "js/script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>
