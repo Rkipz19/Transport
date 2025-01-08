@@ -8,6 +8,7 @@ use PHPMailer\PHPMailer\Exception;
 
 set_include_path(get_include_path() . PATH_SEPARATOR . 'C:\Apache24\htdocs\Transport\classes'); 
 require_once 'connect.php';
+session_start();
 class process extends connection{
     public function signup_process(){
         //Load Composer's autoloader
@@ -112,9 +113,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         $result = $this->connect()->prepare($sql);
         $result->execute();
         $row = $result->fetch();
-        $Firstname = $row['firstname'];
-        $Lastname = $row['lastname'];
-        $Email = $row['email'];
+        $_SESSION['firstname'] = $row['firstname'];
+        $_SESSION['lastname'] = $row['lastname'];
+        $_SESSION['email'] = $row['email'];
         }
     }
 }
