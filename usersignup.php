@@ -1,5 +1,6 @@
 <?php
 require_once "AutoLoad.php";
-$Objlayout -> header("signup");
-$Objform -> displayform();
+$Objlayout -> header();
+$ObjProcesses -> signup_process();
+$ObjUserForm ->signup_form();
 $Objlayout -> footer();
