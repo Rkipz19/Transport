@@ -84,20 +84,24 @@ class pagecontent{
   <div>
   <h4 style = "text-align:center">About us</h4>
 </div>
-  <div class = "row justify-content-evenly">
-  <div class = "col-4 border border-info">
+  <div class = "row align-items-md-stretch">
+  <div class = "col-md-6">
+  <div class = "h-100 p-5  text-bg-dark rounded-3">
     <h6>Deliver Resources</h6>
     <p>The Urban Links Transport transports produce<br> such as cereals, livestock, perishable
       like<br> milk, eggs, fish and flowers, and<br> farm inputs such as fertilizers, manure,<br> herbicides,
       pesticides and seeds.
     </p>
   </div>
-  <div class = "col-4 border border-info">
+  </div>
+  <div class = "col-md-6">
+  <div class = "h-100 p-5 text-bg-dark rounded-3">
     <h6>Shipping to retailers</h6>
     <p>We provide transportation of the agricultural<br> goods for farmers between farms and<br>
       retail-outlets, instead of having consumer<br> pick up the agricultural produce directly<br> from
       farmers.
     </p>
+  </div>
   </div>
 </div>
 
