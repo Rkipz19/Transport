@@ -100,6 +100,7 @@ function validateConfirmPassword(confirmpassword) {
           form.classList.add('was-validated');
         }, false);
       });
+      
       var email = document.getElementById('email');
       email.oninput = () => {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
