@@ -2,7 +2,7 @@
 class userForms{
  public function signup_form(){
   ?>
-<div class = "container d-flex gap-3 justify-content-center align-items-center mt-2">
+<div class = "container d-flex gap-3 justify-content-center  mt-2">
 <form class = "needs-validation" class = "col-log-6 offset-lg-3" method = "POST" action = "<?php htmlspecialchars($_SERVER['PHP_SELF']);?>" novalidate>
   <h1 style = "text-align:center;">Sign Up</h1>
   <div class="form-group p-2" class = "row justify-content-center">
@@ -63,6 +63,10 @@ class userForms{
   ?>
 <div class = "container d-flex gap-3 my-5 justify-content-center align-items-center">
   <form class = "needs-validation" class = "col-log-6 offset-lg-3" method = "POST" novalidate>
+  <?php if(isset($GLOBALS['msg'])){echo $GLOBALS['msg'];}?>
+  <?php if(isset($GLOBALS['error'])){echo $GLOBALS['error'];}?>
+    <h2 style = "text-align:center;">Login</h2>
+
     <div class="form-group p-3">
       <label for="exampleInputEmail1">Email address</label>
         <input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp" placeholder="Enter email">
@@ -70,10 +74,11 @@ class userForms{
     <div class="form-group p-3">
     <label for="exampleInputPassword1">Password</label>
       <input type="password" class="form-control" id="password" name="password" placeholder="Password">
-        <input type="checkbox" onclick="myFunction()">Show password
+      <input type="checkbox" onclick="myFunction()">Show password
     </div>
 <div>
   <p>Don't have an account? <a href = "usersignup.php">Sign up</a></p>
+  <p>Forgot password? <a href = "resetpassword.php">Forgot password</a></p>
   <p>Back home <a href = "index.php"> Home</a></p>
   </div>
   <button type="submit" class="btn btn-primary" name = "login">Submit</button>
@@ -120,6 +125,54 @@ class userForms{
 </div>
 <?php
  }
+
+ 
+ public function newpassword_form(){
+  ?>
+  <div class = "container d-flex gap-3 my-5 justify-content-center align-items-center">
+  
+  <form method = "POST" action = "usernewpassword.php">
+  <input type="hidden" name="email" value="<?php echo htmlspecialchars($_SESSION['email'] ?? ''); ?>">
+    <div>
+  <?php if(isset($GLOBALS['error'])){echo '<p class="alert-danger rounded p-3">'.$GLOBALS['error'].'</p>';} ?>
+  <?php if(isset($GLOBALS['expired'])){echo '<p class="alert-danger rounded p-3">'.$GLOBALS['expired'].'</p>';} ?>
+
+  <?php if(isset($GLOBALS['msg'])){echo '<p class="alert-success rounded p-3">'.$GLOBALS['msg'].'</p>';} ?>
+ </div>
+  <div class="form-group p-3">
+    <label for="newpassword">New Password</label>
+      <input type="password" class="form-control" id="newpassword" name="newpassword" placeholder="New Password">
+        <input type="checkbox" onclick="myFunction()">Show password
+    </div>
+    <div class="form-group p-3">
+    <label for="confirmnewpassword">Confirm New Password</label>
+      <input type="password" class="form-control" id="confirmnewpassword" name="confirmnewpassword" placeholder="Confirm New Password">
+        <input type="checkbox" onclick="myFunction()">Show password
+    </div>
+  <button type="submit" class="btn btn-primary" name = "reset">Submit</button>
+</form>
+</div>
+<?php
+ }
+
+
+ public function forgot_password(){
+  ?>
+  <div class = "container d-flex gap-3 my-5 justify-content-center align-items-center">
+  
+  <?php if(isset($msg)){echo $msg;} ?>
+  <?php if(isset($error)){echo $error;} ?>
+  <form method = "POST">
+  <h1>Reset Your Password</h1>
+  <div class="form-group p-3">
+  <label for="email">Email</label>
+  <input type="email" class="form-control" id="email" placeholder="Enter Email" name = "email" required>
+  <button type="submit" class="btn btn-primary" name = "resetPassword">Submit</button>
+ </div>
+ </form>
+ </div>
+ <?php
+}
 }
 
 
