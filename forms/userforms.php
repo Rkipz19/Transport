@@ -105,53 +105,44 @@ class userForms{
 </div>
   <?php
  }
+ 
  public function userpage(){
   ?>
-  <div class = "d-flex justify-content-start">
-  <table>
-      <tr>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Email</th>
-      </tr>
-      <tr>
-          <td><?php echo $_SESSION['firstname'] ?></td>
-          <td><?php echo $_SESSION['lastname'] ?></td>
-          <td><?php echo $_SESSION['email'] ?></td>
-  </table>
-</div>
-<div>
-  <a href = "logout.php">Logout</a>
-</div>
-<?php
- }
-
- 
- public function newpassword_form(){
-  ?>
-  <div class = "container d-flex gap-3 my-5 justify-content-center align-items-center">
-  
-  <form method = "POST" action = "usernewpassword.php">
-  <input type="hidden" name="email" value="<?php echo htmlspecialchars($_SESSION['email'] ?? ''); ?>">
-    <div>
-  <?php if(isset($GLOBALS['error'])){echo '<p class="alert-danger rounded p-3">'.$GLOBALS['error'].'</p>';} ?>
-  <?php if(isset($GLOBALS['expired'])){echo '<p class="alert-danger rounded p-3">'.$GLOBALS['expired'].'</p>';} ?>
-
-  <?php if(isset($GLOBALS['msg'])){echo '<p class="alert-success rounded p-3">'.$GLOBALS['msg'].'</p>';} ?>
- </div>
-  <div class="form-group p-3">
-    <label for="newpassword">New Password</label>
-      <input type="password" class="form-control" id="newpassword" name="newpassword" placeholder="New Password">
-        <input type="checkbox" onclick="myFunction()">Show password
+ <div class = "container-fluid">
+    <div class = "row flex-nowrap">
+      <div class = "col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
+        <div class = "d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+          <a href = "/" class = "d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+            <span class = "fs-4 d-none d-sm-inline align-middle">Menu</span>
+          </a>
+          <ul class = "nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id ="menu">
+            <li class = "nav-item">
+              <a href = "" class = "nav-link align-middle px-0">
+              <i class="bi bi-house"></i></i><span class = "ms-1 d-none d-sm-inline">Home</span>
+              </a>
+            </li>
+          </ul>
+          <hr>
+          <div class = "dropdown pb-4">
+            <a href = "" class = "d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+              <img src = "images/driver.jpg" alt = "" width = "30" height = "30" class ="rounded-circle">
+                <span class = "d-none d-sm-inline mx-1"><?php echo $_SESSION['firstname'] ?></span>
+            </a>
+            <ul class = "dropdown-menu dropdown-menu-dark text-small shadow">
+              <li><a class = "dropdown-item" href = "profile.php">Profile</a></li>
+              <li>
+                <hr class ="dropdown-divider">
+              </li>
+              <li><a class = "dropdown-item" href = "logout.php">Sign Out</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class = "col py-3">
+      <h5 class= "text-center">Welcome <?php echo $_SESSION['firstname'] ?> to Urban Link Transport!</h5>
+      </div>
     </div>
-    <div class="form-group p-3">
-    <label for="confirmnewpassword">Confirm New Password</label>
-      <input type="password" class="form-control" id="confirmnewpassword" name="confirmnewpassword" placeholder="Confirm New Password">
-        <input type="checkbox" onclick="myFunction()">Show password
-    </div>
-  <button type="submit" class="btn btn-primary" name = "reset">Submit</button>
-</form>
-</div>
+  </div>
 <?php
  }
 
@@ -159,11 +150,9 @@ class userForms{
  public function forgot_password(){
   ?>
   <div class = "container d-flex gap-3 my-5 justify-content-center align-items-center">
-  
-  <?php if(isset($msg)){echo $msg;} ?>
-  <?php if(isset($error)){echo $error;} ?>
   <form method = "POST">
   <h1>Reset Your Password</h1>
+  <?php if(isset($GLOBALS['msg'])){echo $GLOBALS['msg'];}?>
   <div class="form-group p-3">
   <label for="email">Email</label>
   <input type="email" class="form-control" id="email" placeholder="Enter Email" name = "email" required>
@@ -173,7 +162,81 @@ class userForms{
  </div>
  <?php
 }
+
+public function reset_password(){
+  ?>
+    <div class = "container d-flex gap-3 my-5 justify-content-center align-items-center">
+   <form method = "POST">
+      <h1>Reset Your password</h1>
+      <?php if(isset($GLOBALS['msg'])){echo $GLOBALS['msg'];}?>
+      <div class="form-group p-3">
+         <input type="hidden" name = "token" class="form-control" value = "<?= htmlspecialchars($GLOBALS['token']) ?>">
+        </div>
+      <div class="form-group p-2" class = "row justify-content-center">
+          <label for="password">Password</label>
+          <input type="password" class= "form-control" id="password" placeholder="Enter Password" name = "password" oninput = "validatePassword(this.value)" required>
+          <input type="checkbox" onclick="myFunction()">Show password
+    <!--<div class = "valid-feedback">Valid</div>-->
+          <div class = "invalid-feedback">Please fill out this field.</div>
+          <i class = "fas fa-eye" id = "icon"></i>
+      </div>
+      <div class = "form-group">
+          <span id="feedback" class = "text-danger"></span>
+      </div>
+    <div class="form-group p-2" class = "row justify-content-center">
+          <label for="confirmpassword">ConfirmPassword</label>
+          <input type="password" class = "form-control "id="confirmpassword" placeholder="Confirm Password" name = "confirmpassword" oninput ="validateConfirmPassword(this.value)" required>
+          <input type="checkbox" onclick="myFunction1()">Show password
+    <!--<div class = "valid-feedback">Valid</div>-->
+    <div class = "invalid-feedback">Please fill out this field.</div>
+          <i class = "fas fa-eye" id = "icon1"></i>
+    </div>
+    <div class = "form-group">
+          <span id="feedback1" class = "text-danger"></span>
+    </div>
+    <div class = "row justify-content-center p-2">
+          <button type="submit" class="btn btn-primary" name = "Reset">Submit</button>
+    </div>
+      </form>
+      </div>
+
+ <?php
 }
+
+public function profile(){
+  ?>
+<div class = "container d-flex gap-3 my-5 justify-content-center align-items-center border border-2 border-dark" style = "width: 19rem;">
+<form>
+<h2 style = "text-align:center">Profile</h2>
+<div class = "justify-content-center p-2">
+<img src = "" alt = "" width = "200" height = "200" class ="rounded-circle border border-2 border-dark mx-auto d-block">
+</div>
+<div class = "form-group p-3">
+<label>Firstname:</label>
+<input type = "text" class = "form-control" value = "<?php echo $_SESSION['firstname']?>">
+</div>
+<div class = "form-group p-3">
+<label>Lastname:</label>
+<input type = "text" class = "form-control" value = "<?php echo $_SESSION['lastname'] ?>">
+</div>
+<div class = "form-group p-3">
+<label>Email:</label>
+<input type = "text" class = "form-control" value = "<?php echo $_SESSION['email']?>">
+</div>
+<div class = "form-group mb-3">
+  <label>Upload Profile picture:</label>
+  <input type = "file" class = "form-control" id = "profilepic">
+</div>
+<div class = "row justify-content-center p-2">
+<button type = "submit" class = "btn btn-primary">Update Profile</button>
+</div>
+</form>
+</div>
+  <?php
+}
+}
+
+
 
 
 
