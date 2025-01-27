@@ -59,17 +59,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     } catch (Exception $e) {
         echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
     }
-
-  }
+}
 }
     public function login_process(){
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
             $email = $_POST['email'];
             $password = $_POST['password'];
        
-            $sql = "SELECT * FROM users WHERE email = '$email'";
+            $sql = "SELECT * FROM users WHERE email = ?";
             $stmt = $this->connect()->prepare($sql);
-            $stmt->execute();
+            $stmt->execute([$email]);
             $user = $stmt->fetch();
             if($user){
                 if($user['email_verified_at'] == NULL){
@@ -94,9 +93,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             $stmt->execute();
             $user = $stmt->fetch();
             if($user['verification_code'] == $verification_code){
-                $sql = "UPDATE users SET email_verified_at = NOW() WHERE email = '$email'";
+                $sql = "UPDATE users SET email_verified_at = NOW() WHERE email = ?";
                 $stmt = $this->connect()->prepare($sql);
-                $stmt->execute();
+                $stmt->execute([$email]);
                 echo "Email verified successfully";
                 header("Location: userlogin.php");
             }else{
@@ -107,136 +106,133 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
     public function userpage_process(){
         if(!isset($_SESSION['email'])){
-            header("Location: userlogin.php");
-        }else{
-        $currentuser = $_SESSION['email'];
-        $sql = "SELECT * FROM `users` WHERE `email` = '$currentuser'";
-        $result = $this->connect()->prepare($sql);
-        $result->execute();
-        $row = $result->fetch();
-        $_SESSION['firstname'] = $row['firstname'];
-        $_SESSION['lastname'] = $row['lastname'];
-        $_SESSION['email'] = $row['email'];
-        }
+            header("Location:userlogin.php"); //redirect to login page if user is not logged in
+          }else{
+            $currentuser = $_SESSION['email'];
+            $sql = "SELECT * FROM `users` WHERE `email`= '$currentuser'";
+            $result = $this->connect()->prepare($sql);
+            $result->execute();
+            $user = $result->fetch();
+            $_SESSION['firstname'] = $user['firstname'];
+          }          
     }
 
     public function resetpassword(){
-        if(isset($_POST['resetPassword'])){
-            $email = $_POST['email'];
+       if(isset($_POST['email'])){
+        $email = $_POST['email'];
+       
+       $token = bin2hex(random_bytes(16));
 
-            $sql = "SELECT email FROM users WHERE email = ?";
-            $query = $this->connect()->prepare($sql);
-            $query->execute([$email]);
-            $row = $query->rowCount();
+       $token_hash = hash('sha256', $token);
+       
+       $expiry = date("Y-m-d H:i:s",time() + 60 * 30);
+
+       $sql = "UPDATE users SET reset_token_hash = :reset_token_hash, reset_token_expires_at = :reset_token_expires_at WHERE email = :email";
+
+        $stmt = $this->connect()->prepare($sql);
+        $stmt->bindParam(':reset_token_hash', $token_hash, PDO::PARAM_STR);
+        $stmt->bindParam(':reset_token_expires_at', $expiry, PDO::PARAM_STR);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->execute();
+
+        if($stmt->rowCount() > 0){
+            $mail = require __DIR__ . '/mailer.php';
+
+            $mail->setFrom('Urbanlinktranport@example.com', 'Urbanlink Transport.com');
+            $mail-> addAddress($email);
+            $mail->Subject = 'Password Reset';
+            $mail->Body = <<<END
+            Click <a href = "http://localhost/Transport/usernewpassword.php?email=$email&token=$token">here</a> to reset your password.
             
-            if($row == 1){
-                // existing user, proceed with reset password
-
-                //generate a random code
-                $code = generateRandomString();
-
-                $link = 'href = "http://localhost/Transport/usernewpassword.php?email='.$email.'$code='.$code.'"';
-
-                $link2 = '<span style="width:100%;"><a style="padding:10px 100px;border-radius:30px;background:#a8edbc;"'.$link.'>Link </a></span>';
-
-                //echo $code, $link
-                $sql1 = "SELECT * FROM reset WHERE email = ?";
-                $query_exist = $this->connect()->prepare($sql1);
-                $query_exist ->execute([$email]);
-                $from_reset = $query_exist->fetch();
-
-                if(empty($from_reset)){
-                    $query_insert = $this->connect()->prepare("INSERT INTO reset(email, code) VALUES (?,?)");
-                    $query_insert->execute([$email,$code]);
-                }else{
-                    //Already exist reseting attempt, switch to update the reset table instead
-                    $query_insert = $this->connect()->prepare("UPDATE reset SET code = ? WHERE email =?");
-                    $query_insert->execute([$code,$email]);
-                }
-
-                $mail = new PHPMailer(true);
-   
-                try {
-                  //$mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
-                  $mail->isSMTP();                                            //Send using SMTP
-                  $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
-                  $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-                  $mail->Username   = 'ronnie.kipkoech@strathmore.edu';                     //SMTP username
-                  $mail->Password   = 'muettovltjukasab';                               //SMTP password
-                  $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
-                  $mail->Port       = 465;    
-              
-                  //Recipients
-                  $mail->setFrom('Urbanlinktranport@gmail.com', 'Urbanlink Transport');
-                  $mail->addAddress($email); 
-                  //Content
-                  $mail->isHTML(true);                                  //Set email format to HTML
-                  $mail->Subject = 'Reset password from Urban Links';
-                  $mail->Body    = '
-                    <p>Dear '.$email.',</p>
-
-                    <p>Please click on this link to reset your password:</p>
-                    <p>'.$link2.'</p>
-
-                    Best wishes,
-                    <br>
-                    <span>Urban Link Transport</span>
-                ';
-                      //$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
-                  
-                  $mail->send();
-
-                  echo '<script>alert("Please check your email(including spam) to see the password reset Link.")</script>';
-                  
-                  } catch (Exception $e) {
-                      echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-                  }
-
-            } else {
-                echo "<script>alert('Email does not exist!')</script>";
+            END;
+            
+            try{
+                $mail->send();
+            }catch(Exception $e){
+                echo "Message could not be sent. Mailer Error: {$mail->Error_Info}";
             }
         }
+        $GLOBALS['msg'] = "Message has been sent, please check your email";
+       }
     }
 
-    public function newpassword(){
-        if(isset($_GET['email']) && isset($_GET['code'])){
-            $_SESSION['email'] = $_GET['email'];
-            $code = $_GET['code'];
+    public function resetpassword_process(){
+        if(isset($_GET['token'])){
+           $GLOBALS['token'] = $_GET['token'];
 
-            $sql = "SELECT * FROM reset WHERE email = ?";
-            $query = $this->connect()->prepare($sql);
-            $query->execute([$_SESSION['email']]);
-            $from_reset = $query->fetch();
+           $token_hash = hash('sha256', $GLOBALS['token']);
 
-            if($code != $from_reset['code']){
-                $GLOBALS['expired'] = 'Sorry, your link is invalid or has expired!';
-            }
+           $pdo = $this->connect();
+
+           $sql = "SELECT * FROM users WHERE reset_token_hash = :reset_token_hash";
+
+           $stmt = $pdo -> prepare($sql);
+
+           $stmt->bindParam(':reset_token_hash', $token_hash, PDO::PARAM_STR);
+
+           $stmt->execute();
+
+           $user = $stmt->fetch();
+
+           if($user ===  null){
+            die("token not found");
+           }
+
+           if(strtotime($user['reset_token_expires_at']) <= time()){
+            die("Token has expired");
+           }
         }
 
-        if(isset($_POST['reset'])){
-            $pass1 = $_POST['newpassword'];
-            $pass2 = $_POST['confirmnewpassword'];
-            $email = $_POST['email'];
-
-            if($pass1 == $pass2){
-                $hashed_password = password_hash($pass1, PASSWORD_DEFAULT);
-                $query1 = $this->connect()->prepare('UPDATE users SET password = "$hashed_password"  WHERE email = "$email"');
-               
-               if($query1->execute()){
-                if($query1->rowCount()>0){
-                $GLOBALS['msg'] = 'Successfully updated your password!<a class="btn btn-success" href="userlogin.php">Login</a>';
-                }else{
-                    $GLOBALS['error'] = 'Failed to update password. No rows affected.';
-                }
-            }else{
-                $GLOBALS['error'] = 'Failed to execute update query. Please try again.';
-            } 
-        }else{
-                $GLOBALS['error'] = 'Password do not match!';
+        if(isset($_POST['token'])){
+            $token = $_POST['token'];
+ 
+            $token_hash = hash('sha256', $token);
+ 
+            $pdo = $this->connect();
+ 
+            $sql = "SELECT * FROM users WHERE reset_token_hash = :reset_token_hash";
+ 
+            $stmt = $pdo -> prepare($sql);
+ 
+            $stmt->bindParam(':reset_token_hash', $token_hash, PDO::PARAM_STR);
+ 
+            $stmt->execute();
+ 
+            $user = $stmt->fetch();
+ 
+            if($user ===  null){
+             die("token not found");
             }
-            session_destroy();
+ 
+            if(strtotime($user['reset_token_expires_at']) <= time()){
+             die("Token has expired");
+            }
+         
+ 
+         $password_hash = password_hash($_POST['password'], PASSWORD_DEFAULT);
+ 
+         $sql = "UPDATE users SET password = :password,reset_token_hash = NULL, reset_token_expires_at = NULL WHERE userid = :id";
+ 
+         $stmt = $pdo -> prepare($sql);
+ 
+         $stmt->bindParam(':password', $password_hash, PDO::PARAM_STR);
+         $stmt->bindParam(':id', $user['userid'], PDO::PARAM_INT);
+ 
+         $stmt->execute();
+ 
+         $GLOBALS['msg'] = "Password reset successfully. You can now login.";
+     }
+    }
 
-        }
+    public function profile(){
+        $currentuser = $_SESSION['email'];
+        $sql = "SELECT * FROM `users` WHERE `email`= '$currentuser'";
+        $result = $this->connect()->prepare($sql);
+        $result->execute();
+        $user = $result->fetch();
+        $_SESSION['firstname'] = $user['firstname'];
+        $_SESSION['lastname'] = $user['lastname'];
+        $_SESSION['email'] = $user['email'];
     }
 }
 
