@@ -26,6 +26,9 @@ class pagecontent{
         <li class="nav-item">
           <a class="nav-link" href="userlogin.php">Login</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="adminlogin.php">Admin</a>
+        </li>
       </ul>
       
     </div>
