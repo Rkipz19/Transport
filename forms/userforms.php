@@ -2,7 +2,18 @@
 class userForms{
  public function signup_form(){
   ?>
-<div class = "container d-flex gap-3 justify-content-center  mt-2">
+  <!--------Main container------------>
+<div class = "container d-flex justify-content-center align-items-center min-hv-100">
+  <div class = "row border rounded-5 p-3 bg-white shadow box-area">
+    <div class = "col-md-6 rounded-4 d-flex justify-content-center align-items-center flex-column left-box" style = "background: #808080">
+      <div class = "featured-image mb-3">
+        <img src = "images/driver.jpg" class = "img-fluid" style= "width:450px">
+      </div>
+      <p class = "text-white fs-2" style = "font-family: 'Courier New', Courier, monospace; font-weight: 700;">Be verified</p>
+      <small class = "text-white text-wrap text-center" style = "width: 17rem;font-family: 'Courier New', Courier, monospace;">Transporting farm produce</small>
+    </div>
+  <div class = "col-md-6 right-box">
+    <div class = "row">
 <form class = "needs-validation" class = "col-log-6 offset-lg-3" method = "POST" action = "<?php htmlspecialchars($_SERVER['PHP_SELF']);?>" novalidate>
   <h1 style = "text-align:center;">Sign Up</h1>
   <div class="form-group p-2" class = "row justify-content-center">
@@ -30,7 +41,7 @@ class userForms{
   <div class="form-group p-2" class = "row justify-content-center">
     <label for="password">Password</label>
     <input type="password" class= "form-control" id="password" placeholder="Enter Password" name = "password" oninput = "validatePassword(this.value)" required>
-    <input type="checkbox" onclick="myFunction()">Show password
+    <input type="checkbox" onclick="myFunction()"><small>Show password</small>
     <!--<div class = "valid-feedback">Valid</div>-->
     <div class = "invalid-feedback">Please fill out this field.</div>
    <i class = "fas fa-eye" id = "icon"></i>
@@ -41,7 +52,7 @@ class userForms{
   <div class="form-group p-2" class = "row justify-content-center">
     <label for="confirmpassword">ConfirmPassword</label>
     <input type="password" class = "form-control "id="confirmpassword" placeholder="Confirm Password" name = "confirmpassword" oninput ="validateConfirmPassword(this.value)" required>
-    <input type="checkbox" onclick="myFunction1()">Show password
+    <input type="checkbox" onclick="myFunction1()"><small>Show password</small>
     <!--<div class = "valid-feedback">Valid</div>-->
     <div class = "invalid-feedback">Please fill out this field.</div>
     <i class = "fas fa-eye" id = "icon1"></i>
@@ -51,17 +62,29 @@ class userForms{
   </div>
   <div class = "row justify-content-center p-2">
   <button type="submit" class="btn btn-primary" id= "myButton" name = "signup">Submit</button>
-  </div>
-  <div class = "form-group justify-content-center">
+</div>
+<div class = "form-group justify-content-center">
     <p>Back Home <a href = "index.php"> Home</a></p>
 </div>
 </form>
+ </div>
+ </div>
+ </div>
   </div>
   <?php
  }
  public function login_form(){
   ?>
 <div class = "container d-flex gap-3 my-5 justify-content-center align-items-center">
+<div class = "row border rounded-5 p-3 bg-white shadow box-area">
+    <div class = "col-md-6 rounded-4 d-flex justify-content-center align-items-center flex-column left-box" style = "background: #808080">
+      <div class = "featured-image mb-3">
+        <img src = "images/driver.jpg" class = "img-fluid" style= "width:450px">
+      </div>
+      <p class = "text-white fs-2" style = "font-family: 'Courier New', Courier, monospace; font-weight: 700;">Be verified</p>
+      <small class = "text-white text-wrap text-center" style = "width: 17rem;font-family: 'Courier New', Courier, monospace;">Transporting farm produce</small>
+    </div>
+    <div class = "col-md-6 right-box">
   <form class = "needs-validation" class = "col-log-6 offset-lg-3" method = "POST" novalidate>
   <?php if(isset($GLOBALS['msg'])){echo $GLOBALS['msg'];}?>
   <?php if(isset($GLOBALS['error'])){echo $GLOBALS['error'];}?>
@@ -83,6 +106,8 @@ class userForms{
   </div>
   <button type="submit" class="btn btn-primary" name = "login">Submit</button>
 </form>
+ </div>
+ </div>
 </div>
 <?php
  }
