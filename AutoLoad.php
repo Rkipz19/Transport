@@ -17,4 +17,5 @@ $Objlayout = new layout();
 $Objpagecont = new pagecontent();
 $ObjUserForm = new userForms();
 $ObjProcesses = new process();
+$ObjAdminForm = new adminForms();
 
