@@ -65,7 +65,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
             $email = $_POST['email'];
             $password = $_POST['password'];
-       
+            
             $sql = "SELECT * FROM users WHERE email = ?";
             $stmt = $this->connect()->prepare($sql);
             $stmt->execute([$email]);
@@ -79,11 +79,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                     $_SESSION['email'] = $email;
                     header("Location: userpage.php");
                 }else{
-                    $GLOBALS['error'] = "<h4 class = 'text-danger text-center'>Incorrect email or password</h4>";
+                    $GLOBALS['error'] = "<h4 class='text-danger text-center'>Incorrect email or password</h4>";
                 }
         }
         }
-}
+    }
+
     public function verify_process(){
         if(isset($_POST['verify_email'])){
             $email = $_POST['email'];
@@ -234,5 +235,42 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         $_SESSION['lastname'] = $user['lastname'];
         $_SESSION['email'] = $user['email'];
     }
+
+    public function adminlogin(){
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+            
+            $sql1 = "SELECT * FROM admin WHERE email = ?";
+            $stmt = $this->connect()->prepare($sql1);
+            $stmt->execute([$email]);
+            $admin = $stmt->fetch();
+            if($admin){
+                $hashedPassword = hash('sha512', $password);
+
+                if($hashedPassword === $admin['password']){
+                    $GLOBALS['msg'] = "<h4 class= 'text-success text-center'>You have successfully login!</h4>";
+                    $_SESSION['email'] = $email;
+                    header("Location: regadminpage.php");
+                }else{
+                    $GLOBALS['error'] ="<h4 class='text-danger text-center'>Incorrect email or password</h4>";
+                }
+        }
+        }
+    }
+    
+    public function adminpage_process(){
+        if(!isset($_SESSION['email'])){
+            header("Location:userlogin.php"); //redirect to login page if user is not logged in
+          }else{
+            $currentuser = $_SESSION['email'];
+            $sql = "SELECT * FROM `admin` WHERE `email`= '$currentuser'";
+            $result = $this->connect()->prepare($sql);
+            $result->execute();
+            $user = $result->fetch();
+            $_SESSION['adminname'] = $user['adminname'];
+          }          
+    }
+
 }
 
