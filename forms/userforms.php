@@ -86,7 +86,7 @@ class userForms{
     </div>
     <div class = "col-md-6 right-box">
   <form class = "needs-validation" class = "col-log-6 offset-lg-3" method = "POST" novalidate>
-  <?php if(isset($GLOBALS['msg'])){echo $GLOBALS['msg'];}?>
+  
   <?php if(isset($GLOBALS['error'])){echo $GLOBALS['error'];}?>
     <h2 style = "text-align:center;">Login</h2>
 
@@ -100,11 +100,12 @@ class userForms{
       <input type="checkbox" onclick="myFunction()">Show password
     </div>
 <div>
-  <p>Don't have an account? <a href = "usersignup.php">Sign up</a></p>
-  <p>Forgot password? <a href = "resetpassword.php">Forgot password</a></p>
-  <p>Back home <a href = "index.php"> Home</a></p>
+  <p style = "text-align:center">Don't have an account? <a href = "usersignup.php">Sign up</a></p>
   </div>
-  <button type="submit" class="btn btn-primary" name = "login">Submit</button>
+  <div class = "d-grid col-6 mx-auto">
+  <button type="submit" class="btn btn-primary mb-3" name = "login">Submit</button>
+  <a href = "index.php" role = "button" class = "btn btn-secondary">Back Home</a>
+ </div>
 </form>
  </div>
  </div>
@@ -154,11 +155,11 @@ class userForms{
                 <span class = "d-none d-sm-inline mx-1"><?php echo $_SESSION['firstname'] ?></span>
             </a>
             <ul class = "dropdown-menu dropdown-menu-dark text-small shadow">
-              <li><a class = "dropdown-item" href = "profile.php">Profile</a></li>
+              <li><a class = "dropdown-item" href = "userprofile.php">Profile</a></li>
               <li>
                 <hr class ="dropdown-divider">
               </li>
-              <li><a class = "dropdown-item" href = "logout.php">Sign Out</a></li>
+              <li><a class = "dropdown-item" href = "userlogout.php">Sign Out</a></li>
             </ul>
           </div>
         </div>
