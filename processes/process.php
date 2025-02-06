@@ -6,12 +6,13 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-        //Load Composer's autoloader
+//Load Composer's autoloader
 require 'C:/Apache24/htdocs/PHPMailer/vendor/autoload.php';
 set_include_path(get_include_path() . PATH_SEPARATOR . 'C:\Apache24\htdocs\Transport\classes'); 
 require_once 'connect.php';
-include 'functions/functions.php';
+//include 'functions/functions.php';
 session_start();
+//session_destroy();
 class process extends connection{
     public function signup_process(){
 
@@ -107,7 +108,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
     public function userpage_process(){
         if(!isset($_SESSION['email'])){
-            header("Location:userlogin.php"); //redirect to login page if user is not logged in
+            header("Location:users/userlogin.php"); //redirect to login page if user is not logged in
           }else{
             $currentuser = $_SESSION['email'];
             $sql = "SELECT * FROM `users` WHERE `email`= '$currentuser'";
@@ -235,42 +236,5 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         $_SESSION['lastname'] = $user['lastname'];
         $_SESSION['email'] = $user['email'];
     }
-
-    public function adminlogin(){
-        if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            $email = $_POST['email'];
-            $password = $_POST['password'];
-            
-            $sql1 = "SELECT * FROM admin WHERE email = ?";
-            $stmt = $this->connect()->prepare($sql1);
-            $stmt->execute([$email]);
-            $admin = $stmt->fetch();
-            if($admin){
-                $hashedPassword = hash('sha512', $password);
-
-                if($hashedPassword === $admin['password']){
-                    $GLOBALS['msg'] = "<h4 class= 'text-success text-center'>You have successfully login!</h4>";
-                    $_SESSION['email'] = $email;
-                    header("Location: regadminpage.php");
-                }else{
-                    $GLOBALS['error'] ="<h4 class='text-danger text-center'>Incorrect email or password</h4>";
-                }
-        }
-        }
-    }
-    
-    public function adminpage_process(){
-        if(!isset($_SESSION['email'])){
-            header("Location:userlogin.php"); //redirect to login page if user is not logged in
-          }else{
-            $currentuser = $_SESSION['email'];
-            $sql = "SELECT * FROM `admin` WHERE `email`= '$currentuser'";
-            $result = $this->connect()->prepare($sql);
-            $result->execute();
-            $user = $result->fetch();
-            $_SESSION['adminname'] = $user['adminname'];
-          }          
-    }
-
 }
 
