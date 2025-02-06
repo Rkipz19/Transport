@@ -1,7 +1,7 @@
 <?php
 require_once 'AutoLoad.php';
 
+$ObjStaffProcess -> resetpassword();
 $Objlayout -> header();
-$ObjProcesses -> resetpassword_process();
-$ObjUserForm -> reset_password();
+$ObjStaffForm -> resetpassword();
 $Objlayout -> footer();

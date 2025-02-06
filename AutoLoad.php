@@ -16,6 +16,9 @@ spl_autoload_register('classAutoLoader');
 $Objlayout = new layout();
 $Objpagecont = new pagecontent();
 $ObjUserForm = new userForms();
-$ObjProcesses = new process();
+$ObjAdminProcesses = new adminprocess();
 $ObjAdminForm = new adminForms();
+$ObjProcesses = new process();
+$ObjStaffForm = new staffform();
+$ObjStaffProcess = new staffprocess();
 

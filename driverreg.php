@@ -1,7 +1,6 @@
 <?php
 require_once "AutoLoad.php";
-
 $Objlayout -> header();
-$ObjProcesses -> login_process();
-$ObjUserForm -> login_form();
+$ObjAdminProcesses -> driverRegistration();
+$ObjAdminForm ->registerDriver();
 $Objlayout -> footer();
