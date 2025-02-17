@@ -30,3 +30,9 @@ body{
         padding: 20px;
     }
 }
+
+.carousel-inner div{
+    height: 400px;
+    object-fit:cover;
+}
+
