@@ -44,8 +44,9 @@ class adminprocess extends connection{
             $vehicletype = $_POST['vtype'];
             $vehicleplate = $_POST['vplate'];
             $maxloaders = $_POST['vloaders'];
+            $loadcapacity = $_POST['maxload'];
 
-            $sql = "INSERT INTO vehicle(vehicle_type, vehicle_plate, max_loaders) VALUES('$vehicletype','$vehicleplate','$maxloaders')";
+            $sql = "INSERT INTO vehicle(vehicle_type, vehicle_plate, max_loaders,load_capacity,Status) VALUES('$vehicletype','$vehicleplate','$maxloaders','$loadcapacity','Available')";
             $stmt = $this->connect()->prepare($sql);
             $stmt->execute();
 
@@ -72,11 +73,12 @@ class adminprocess extends connection{
             $mail->addAddress($demail);
             $mail-> Subject = 'Driver Registration successful';
             $mail -> Body = <<<END
-                Dear $drivename,
-                Your registration as a driver with Urbanlink Transport has been successful.
-                Use your email to reset your password. Hope to see you soon.
+                Dear $drivename,<br>
+                Your registration as a driver with Urbanlink Transport has been successful.<br>
+                Use your email to reset your password. <br>
+                Hope to see you soon.
                 
-                Best regards,
+                Best regards,<br>
                 Urbanlink Transport.
             END;
             try{
@@ -88,7 +90,7 @@ class adminprocess extends connection{
 
             $encrypted_password = password_hash($password, PASSWORD_DEFAULT);
 
-            $sql = "INSERT INTO drivers(drivername, license, email, category, password, vehicleid) VALUES('$drivename','$dlicense','$demail','$cproduct','$encrypted_password','$vehicleid')";
+            $sql = "INSERT INTO drivers(drivername, license, email, category, password, vehicleid,Status) VALUES('$drivename','$dlicense','$demail','$cproduct','$encrypted_password','$vehicleid','Active')";
             $stmt = $this->connect()->prepare($sql);
             $stmt -> execute();
 
@@ -103,7 +105,7 @@ class adminprocess extends connection{
     public function loaderRegistration(){
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
             $loadername = $_POST['loadername'];
-            $loaderid = $_POST['identificationno.'];
+            $loaderid = $_POST['idnumber'];
             $email = $_POST['email'];
             $assignedDriver = $_POST['driver'];
 
@@ -125,7 +127,7 @@ class adminprocess extends connection{
                 $GLOBALS['max'] = "Cannot assign more loaders. Vehicle limit reached";
             }
 
-            $sql = "INSERT INTO loaders(loaderName, identificationNumber,email,vehicleid) VALUES('$loadername', '$loaderid','$email','$assignedVehicle')";
+            $sql = "INSERT INTO loaders(loaderName, identificationNumber,email,driverid) VALUES('$loadername', '$loaderid','$email','$assignedDriver')";
             $stmt = $this->connect()->prepare($sql);
             $stmt -> execute();
 

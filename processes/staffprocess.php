@@ -130,4 +130,61 @@ class staffprocess extends connection{
          $GLOBALS['msg'] = "Password reset successfully. You can now <a href='stafflogin.php' class = 'btn btn-primary' role = 'button'>Login</a>.";
      }
     }
+
+    public function staffpage(){
+    $currentdriver = $_SESSION['email'];
+    $sql = "SELECT * FROM `drivers` WHERE `email` = '$currentdriver'";
+    $stmt = $this->connect()->prepare($sql);
+    $stmt -> execute();
+    $driver = $stmt->fetch();
+    $_SESSION['drivername'] = $driver['drivername'];
+
+    $driverid = $driver['driverid'];
+    $sql = "SELECT * FROM orders WHERE assigned_driver = '$driverid' AND status = 'In progress'";
+    $stmt = $this->connect()->prepare($sql);
+    $stmt->execute();
+    $GLOBALS['driver'] = $stmt -> fetchAll();
+    
+    if(isset($_POST['completeorder'])){
+        $orderid = $_POST['orderid'];
+
+        $sql = "SELECT assigned_vehicle, assigned_driver, distance_km FROM orders WHERE orderid = '$orderid'";
+        $stmt = $this->connect()->prepare($sql);
+        $stmt->execute();
+        $order = $stmt-> fetch(PDO::FETCH_ASSOC);
+
+        if($order){
+            $vehicleid = $order['assigned_vehicle'];
+            $distancekm = $order['distance_km'];
+
+            $vsql = "SELECT vehicle_type FROM vehicle WHERE vehicleid = '$vehicleid'";
+            $vstmt = $this->connect()->prepare($vsql);
+            $vstmt->execute();
+            $vehicle = $vstmt->fetch(PDO::FETCH_ASSOC);
+
+            $price_per_km = [
+                'Pickup' => 200,
+                'Lorry' => 650,
+                'Trailer' => 1500,
+                'Refrigerated Truck' =>1000
+            ];
+
+            $vehicletype = $vehicle['vehicle_type'];
+            $costperkm = isset($price_per_km[$vehicletype]) ? $price_per_km[$vehicletype] : 0;
+
+            $totalcost = $distancekm * $costperkm;
+
+            $this->connect()->prepare("UPDATE orders SET status = 'Completed', total_cost = '$totalcost' WHERE orderid = '$orderid'")->execute();
+            $this->connect()->prepare("UPDATE vehicle SET Status = 'Available' WHERE vehicleid = '$vehicleid'")->execute();
+            
+            $_GLOBAL['successorder'] = "<p class = 'text-success text-center'>Order #$orderid completed successfully! Total cost is $totalcost</p>";
+            
+        }else {
+            $_GLOBAL['errororder'] = "<p class = 'text-danger text-center'>Order not found!</p>";
+        }
+    }
+
 }
+}
+
+

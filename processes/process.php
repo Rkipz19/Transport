@@ -109,14 +109,24 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
     public function userpage_process(){
         if(!isset($_SESSION['email'])){
             header("Location:users/userlogin.php"); //redirect to login page if user is not logged in
-          }else{
-            $currentuser = $_SESSION['email'];
-            $sql = "SELECT * FROM `users` WHERE `email`= '$currentuser'";
-            $result = $this->connect()->prepare($sql);
-            $result->execute();
-            $user = $result->fetch();
-            $_SESSION['firstname'] = $user['firstname'];
-          }          
+          }
+        $currentuser = $_SESSION['email'];
+        $sql = "SELECT * FROM `users` WHERE `email`= '$currentuser'";
+        $result = $this->connect()->prepare($sql);
+        $result->execute();
+        $user = $result->fetch();
+
+        if($user){
+        $_SESSION['firstname'] = $user['firstname'];
+          
+        $farmername = $user['firstname'];
+        $sql = "SELECT status,total_cost FROM `orders` WHERE `farmername` = '$farmername '";
+        $stmt = $this->connect()->prepare($sql);
+        $stmt -> execute();
+        $GLOBALS['farmername'] = $stmt->fetchAll();
+        }else{
+            echo "User not found";
+        }
     }
 
     public function resetpassword(){
@@ -151,7 +161,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             try{
                 $mail->send();
             }catch(Exception $e){
-                echo "Message could not be sent. Mailer Error: {$mail->Error_Info}";
+                echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
             }
         }
         $GLOBALS['msg'] = "Message has been sent, please check your email";
@@ -232,9 +242,54 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         $result = $this->connect()->prepare($sql);
         $result->execute();
         $user = $result->fetch();
+        $_SESSION['userid'] = $user['userid'];
         $_SESSION['firstname'] = $user['firstname'];
         $_SESSION['lastname'] = $user['lastname'];
         $_SESSION['email'] = $user['email'];
+
+    }
+
+    public function orders(){
+        if($_SERVER["REQUEST_METHOD"] == "POST"){
+            $farmername =$_POST['fname'];
+            $farmerPhoneNo =$_POST['Phonenumber'];
+            $productdetails =$_POST['producttype'];
+            $productweight =$_POST['weight'];
+            $pickuplocation =$_POST['plocation'];
+            $deliverylocation =$_POST['dlocation'];
+            $distance_km =$_POST['distance'];
+
+            $sql = "SELECT * FROM vehicle WHERE load_capacity >= $productweight AND Status = 'Available' ORDER BY load_capacity ASC LIMIT 1";
+            $stmt = $this->connect()->prepare($sql);
+            $stmt->execute();
+            $vehicle = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if($vehicle){
+                $vehicleid = $vehicle['vehicleid'];
+
+                $sql = "SELECT driverid,Status,category FROM drivers WHERE vehicleid = $vehicleid AND Status = 'Active' AND category = '$productdetails'";
+                $stmt = $this->connect()->prepare($sql);
+                $stmt -> execute();
+                $driver = $stmt->fetch(PDO::FETCH_ASSOC);
+            if($driver){
+                $driverid = $driver['driverid'];
+
+                $sql = "INSERT INTO orders (farmername, farmerphoneno,productdetails, weight, pickupLocation, deliveryLocation,distance_km,assigned_vehicle, assigned_driver, status) VALUES(
+                    '$farmername','$farmerPhoneNo','$productdetails',$productweight,'$pickuplocation','$deliverylocation',$distance_km,$vehicleid,$driverid,'In progress')";
+                $stmt = $this->connect()->prepare($sql);
+                $stmt->execute();
+
+                $this->connect()->prepare("UPDATE vehicle SET Status = 'In Transit' WHERE vehicleid = $vehicleid")->execute();
+                    
+                    $GLOBALS['order'] = "<h5 class = 'text-success text-center'>Order placed successfully! Assigned driver: " . $driverid . "</h5>";
+                }else {
+                    $GLOBALS['Nodriver'] = "<h5 class = 'text-danger text-center'>No driver is assigned to this vehicle.</h5>";
+                }
+            }else{
+                $GLOBALS['Novehicle'] = "<h5 class =  'text-danger text-center'>No available vehicles at the moment.</h5>";
+            }
+
+        }
     }
 }
 
