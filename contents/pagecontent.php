@@ -86,7 +86,7 @@ class pagecontent{
     }
     public function aboutus(){
         ?>
-        <section id = "aboutus">
+        <section id = "aboutus" class = "mt-5">
   <div>
   <h4 style = "text-align:center">About us</h4>
 </div>
