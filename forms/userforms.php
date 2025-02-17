@@ -100,6 +100,7 @@ class userForms{
       <input type="checkbox" onclick="myFunction()">Show password
     </div>
 <div>
+<p style = "text-align:center">Forgot your password? <a href = "resetpassword.php">Reset password</a></p>
   <p style = "text-align:center">Don't have an account? <a href = "usersignup.php">Sign up</a></p>
   </div>
   <div class = "d-grid col-6 mx-auto">
@@ -147,6 +148,11 @@ class userForms{
               <i class="bi bi-house"></i></i><span class = "ms-1 d-none d-sm-inline">Home</span>
               </a>
             </li>
+            <li class = "nav-item">
+              <a href = "order.php" class = "nav-link align-middle px-0">
+              <i class="bi bi-truck"></i><span class = "ms-1 d-none d-sm-inline">Order</span>
+              </a>
+            </li>
           </ul>
           <hr>
           <div class = "dropdown pb-4">
@@ -166,6 +172,20 @@ class userForms{
       </div>
       <div class = "col py-3">
       <h5 class= "text-center">Welcome <?php echo $_SESSION['firstname'] ?> to Urban Link Transport!</h5>
+
+        <table class = "table table-dark">
+          <tr>
+            <th>Delivery Status</th>
+            <th>Total Cost</th>
+          </tr>
+          <?php foreach($GLOBALS['farmername'] as $row) { ?>
+          <tr>
+            <td><?= htmlspecialchar($row['status']) ?></td>
+            <td><?= htmlspecialchar($row['total_cost']) ?></td>
+          </tr>
+            <?php } ?>
+        </table>
+
       </div>
     </div>
   </div>
@@ -257,6 +277,61 @@ public function profile(){
 <button type = "submit" class = "btn btn-primary">Update Profile</button>
 </div>
 </form>
+</div>
+  <?php
+}
+
+public function orders(){
+  ?>
+   <div class = "container d-flex justify-content-center align-items-center min-vh-100">
+    <div class = "border rounded-5 p-3 bg-dark.bg-gradient shadow box-area">
+        <form method = "POST">
+          <div class = "mb-3">
+            <h1 style = "text-align:center">Order placement <i class="bi bi-truck-flatbed"></i></h1>
+          </div>
+          <div class = "mb-3">
+            <?php if(isset($GLOBALS['order'])){ echo $GLOBALS['order'];} ?>
+            <?php if(isset($GLOBALS['Nodriver'])){ echo $GLOBALS['Nodriver'];} ?>
+            <?php if(isset($GLOBALS['Novehicle'])){ echo $GLOBALS['Novehicle'];} ?>
+          </div>
+          <div class="mb-3">
+            <label for="farmername" class="form-label">Farmer name</label>
+            <input type="text" class="form-control" id="farmername" name = "fname" aria-describedby="" value = "<?php echo $_SESSION['firstname'] ?>">
+          </div>
+          <div class="mb-3">
+            <label for="phonenumber" class="form-label">Phone Number</label>
+            <input type="text" class="form-control" id="phonenumber" name = "Phonenumber" placeholder = "+254">
+          </div>
+          <div class="mb-3">
+            <label for="producttype" class="form-label">Product Type</label>
+            <select class="form-select" name = "producttype" id ="producttype">
+              <option selected>Kindly Select A Product for Transport</option>
+              <option value="Farm produce">Perishable Goods(Fruits, Vegetables, Dairy)</option>
+              <option value="Farm Inputs">Farm inputs(Herbicides, Pesticides, Fertilizers)</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="weight" class="form-label">Weight(in tonnes)</label>
+            <input type="number" class="form-control" id="weight" name = "weight" placeholder = "Measure of product in tonnes">
+          </div>
+          <div class="mb-3">
+            <label for="plocation" class="form-label">Pickup Location</label>
+            <input type="text" class="form-control" id="plocation" name = "plocation" placeholder = "Area of collection">
+          </div>
+          <div class="mb-3">
+            <label for="dlocation" class="form-label">Delivery location</label>
+            <input type="text" class="form-control" id="dlocation" name = "dlocation" placeholder = "Destination">
+          </div>
+          <div class="mb-3">
+            <label for="distance" class="form-label">Distance(in km)</label>
+            <input type="text" class="form-control" id="distance" name = "distance" placeholder = "Distance covered in kilometers">
+          </div>
+          <div class = "d-grid col-6 mx-auto">
+            <button type="submit" class="btn btn-primary mb-3">Place Order <i class="bi bi-truck"></i></button>
+            <a href="userpage.php" class = "btn btn-secondary" role = "button"> Back home</a>
+          </div>
+        </form>
+</div>
 </div>
   <?php
 }

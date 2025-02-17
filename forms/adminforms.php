@@ -20,13 +20,13 @@ class adminForms extends connection{
             </li>
             <li>
               <a href = "#sub-menu" data-bs-toggle="collapse" class = "nav-link px-0 align-middle">
-              <i class="bi bi-speedometer"></i><span class = "ms-1 d-none d-sm-inline">Register</span></a>
+              <i class="bi bi-person-add"></i></i><span class = "ms-1 d-none d-sm-inline">Register</span></a>
               <ul class = "collapse nav flex-column ms-1" id = sub-menu data-bs-parent = "#menu">
                 <li>
                   <a href = "driverreg.php" class = "nav-link px-0" ><span class= "d-none d-sm-inline"><small>Driver</small></span></a>
                 </li>
                 <li>
-                  <a href ="" class = "nav-link px-0"><span class = "d-none d-sm-inline"><small>Loader</small></span></a>
+                  <a href ="loadersregistration.php" class = "nav-link px-0"><span class = "d-none d-sm-inline"><small>Loader</small></span></a>
                 </li>
                 <li>
                   <a href ="vehiclereg.php" class = "nav-link px-0"><span class = "d-none d-sm-inline"><small>Vehicle</small></span></a>
@@ -60,7 +60,7 @@ class adminForms extends connection{
         </div>
       </div>
       <div class = "col py-3">
-      <h5 class= "text-center">Welcome <?php echo $_SESSION['adminname'] ?> to Urban Link Transport!</h5>.
+      <h5 class= "text-center">Welcome Admin <?php echo $_SESSION['adminname'] ?> to Urban Link Transport!</h5>.
       </div>
     </div>
   </div>
@@ -120,7 +120,14 @@ class adminForms extends connection{
   </div>
   <div class="mb-3">
     <label for="vehicletype" class="form-label">Vehicle Type</label>
-    <input type="text" class="form-control" id="vehicletype" name = "vtype" aria-describedby="vehicletype" placeholder = "Vehicle Type">
+    <select class="form-select" name = "vtype" aria-label="Default select example">
+      <option selected>Vehicle type</option>
+      <option value = "Pickup">Pickup</option>
+      <option value = "Lorry">Lorry</option>
+      <option value = "Trailer">Trailer</option>
+      <option value = "Refrigerated Truck">Refrigerated Truck</option>
+  </select>
+
   </div>
   <div class="mb-3">
     <label for="vehicleplate" class="form-label">Vehicle plate</label>
@@ -129,6 +136,10 @@ class adminForms extends connection{
   <div class="mb-3">
     <label for="maxloaders" class="form-label">Maximum Loaders</label>
     <input type="number" class="form-control" id="maxloaders" name = "vloaders" placeholder = "Maximum loaders">
+  </div>
+  <div class="mb-3">
+    <label for="maxload" class="form-label">Maximum Load</label>
+    <input type="number" class="form-control" id="maxload" name = "maxload" placeholder = "Maximum load in tonnes">
   </div>
   <div class = "mb-3 justify-content-center">
   <button type="submit" class="btn btn-primary">Submit</button>
@@ -210,14 +221,15 @@ class adminForms extends connection{
 <form method = "POST">
   <div class = "mb-3">
     <h1 style = "text-align:center">Loader Registration</h1>
+    <?php if(isset($GLOBALS['success'])){echo $GLOBALS['success'];}?>
   </div>
   <div class="mb-3">
     <label for="Name" class="form-label">Name</label>
-    <input type="text" class="form-control" id="Name" name = "loadername" aria-describedby="vehicletype" placeholder = "John Doe">
+    <input type="text" class="form-control" id="Name" name = "loadername" placeholder = "John Doe">
   </div>
   <div class="mb-3">
-    <label for="identificationno." class="form-label">Identification Number</label>
-    <input type="text" class="form-control" id="identificationno." aria-describedby="vehicletype" name = "identificationno." placeholder = "e.g 12345678">
+    <label for="id" class="form-label">Identification Number</label>
+    <input type="text" class="form-control" id="id" name = "idnumber" placeholder = "e.g 12345678">
   </div>
   <div class="mb-3">
     <label for="email" class="form-label">Email</label>
@@ -225,7 +237,7 @@ class adminForms extends connection{
   </div>
   <div class="mb-3">
     <label>Assign to driver</label>
-  <select class="form-select" name = "vehicle">
+  <select class="form-select" name = "driver">
       <option selected>Select Driver</option>
       <?php 
       $sql = "SELECT * FROM drivers";
@@ -240,7 +252,8 @@ class adminForms extends connection{
   </select>
   </div>
   <div class = "d-grid col-6 mx-auto">
-  <button type="submit" class="btn btn-primary">Submit</button>
+  <button type="submit" class="btn btn-primary mb-3">Submit</button>
+  <a href = "adminpage.php" role = "button" class = "btn btn-secondary">Back</a>
   </div>
 </form>
 </div>
