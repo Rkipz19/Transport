@@ -112,6 +112,6 @@ class pagecontent{
 </div>
 
 </section>
-        <?php
+      <?php
     }
 }
