@@ -5,65 +5,7 @@ require_once 'connect.php';
 class adminForms extends connection{
     public function adminpage(){
         ?>
-        <div class = "container-fluid">
-    <div class = "row flex-nowrap">
-      <div class = "col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
-        <div class = "d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
-          <a href = "/" class = "d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-            <span class = "fs-4 d-none d-sm-inline align-middle">Menu</span>
-          </a>
-          <ul class = "nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id ="menu">
-            <li class = "nav-item">
-              <a href = "" class = "nav-link align-middle px-0">
-              <i class="bi bi-house"></i></i><span class = "ms-1 d-none d-sm-inline">Home</span>
-              </a>
-            </li>
-            <li>
-              <a href = "#sub-menu" data-bs-toggle="collapse" class = "nav-link px-0 align-middle">
-              <i class="bi bi-person-add"></i></i><span class = "ms-1 d-none d-sm-inline">Register</span></a>
-              <ul class = "collapse nav flex-column ms-1" id = sub-menu data-bs-parent = "#menu">
-                <li>
-                  <a href = "driverreg.php" class = "nav-link px-0" ><span class= "d-none d-sm-inline"><small>Driver</small></span></a>
-                </li>
-                <li>
-                  <a href ="loadersregistration.php" class = "nav-link px-0"><span class = "d-none d-sm-inline"><small>Loader</small></span></a>
-                </li>
-                <li>
-                  <a href ="vehiclereg.php" class = "nav-link px-0"><span class = "d-none d-sm-inline"><small>Vehicle</small></span></a>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <a href = "" class = "nav-link px-0 align-middle">
-              <i class="bi bi-table"></i><span class = "ms-1 d-none d-sm-inline">Orders</span></a>
-            </li>
-            <li>
-              <a href = "" class = "nav-link px-0 align-middle">
-              <i class="bi bi-people-fill"></i><span class = "ms-1 d-none d-sm-inline">Customers</span>
-              </a>
-            </li>
-          </ul>
-          <hr>
-          <div class = "dropdown pb-4">
-            <a href = "" class = "d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-              <img src = "images/driver.jpg" alt = "" width = "30" height = "30" class ="rounded-circle">
-                <span class = "d-none d-sm-inline mx-1"><?php echo $_SESSION['adminname'] ?></span>
-            </a>
-            <ul class = "dropdown-menu dropdown-menu-dark text-small shadow">
-              <li><a class = "dropdown-item" href = "">Profile</a></li>
-              <li>
-                <hr class ="dropdown-divider">
-              </li>
-              <li><a class = "dropdown-item" href = "adminlogout.php">Sign Out</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class = "col py-3">
-      <h5 class= "text-center">Welcome Admin <?php echo $_SESSION['adminname'] ?> to Urban Link Transport!</h5>.
-      </div>
-    </div>
-  </div>
+     
   <?php
     }
     public function adminlogin_form(){
@@ -222,6 +164,7 @@ class adminForms extends connection{
   <div class = "mb-3">
     <h1 style = "text-align:center">Loader Registration</h1>
     <?php if(isset($GLOBALS['success'])){echo $GLOBALS['success'];}?>
+    <?php if(isset($GLOBALS['max'])){echo $GLOBALS['max'];}?>
   </div>
   <div class="mb-3">
     <label for="Name" class="form-label">Name</label>
@@ -259,5 +202,52 @@ class adminForms extends connection{
 </div>
 </div>
   <?php
+  }
+  public function editvehicle(){
+    ?>
+  <div class = "card">
+  <form method = "POST" class="row g-3" action = "code.php">
+    <?php
+    $paramResult = checkParamId('vehicleid');
+    if(!is_numeric($paramResult)){
+      echo '<h5>'.$paramResult.'</h5>';
+      return false;
+    }
+
+    $vehicle = getById('vehicle',checkParamId('vehicleid'));
+    if($vehicle['status'] == 200){
+      ?>
+    <input type="hidden" name = "userId" value = "<?= $vehicle['data']['vehicleid']?>" required>
+    <div class="col-md-6">
+    <label for="inputType" class="form-label">Vehicle Type</label>
+    <input type="text" class="form-control" id="inputType" name = "vehicletype" value = "<?= $vehicle['data']['vehicle_type']?>" required>
+  </div>
+  <div class="col-md-6">
+    <label for="inputPlate" class="form-label">Vehicle Plate</label>
+    <input type="text" class="form-control" id="inputPlate" name = "vehicleplate" value = "<?= $vehicle['data']['vehicle_plate'] ?>" required>
+  </div>
+  <div class="col-12">
+    <label for="inputloaders" class="form-label">Maximum loaders</label>
+    <input type="number" class="form-control" id="inputloaders" name = "maxloaders" value = "<?= $vehicle['data']['max_loaders'] ?>" required>
+  </div>
+  <div class="col-12">
+    <label for="inputcapacity" class="form-label">Load Capacity</label>
+    <input type="number" class="form-control" id="inputcapacity" name = "loadcapacity" value = "<?= $vehicle['data']['load_capacity'] ?>" required>
+  </div>
+  <div class="col-md-6">
+    <label for="inputstatus" class="form-label">Status</label>
+    <input type="text" class="form-control" id="inputstatus" name = "status" value = "<?= $vehicle['data']['Status'] ?>" required>
+  </div>
+  <div class="col-12 float-end">
+    <button type="submit" name = "updateVehicle" class="btn btn-primary">Update</button>
+  </div>
+</form>
+  </div>
+      <?php
+    }else{
+      echo '<h5>'.$vehicle['message'].'</h5>';
+    }
+    ?>
+    <?php
   }
 }

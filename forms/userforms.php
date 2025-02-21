@@ -172,20 +172,26 @@ class userForms{
       </div>
       <div class = "col py-3">
       <h5 class= "text-center">Welcome <?php echo $_SESSION['firstname'] ?> to Urban Link Transport!</h5>
-
-        <table class = "table table-dark">
-          <tr>
-            <th>Delivery Status</th>
-            <th>Total Cost</th>
-          </tr>
-          <?php foreach($GLOBALS['farmername'] as $row) { ?>
-          <tr>
-            <td><?= htmlspecialchar($row['status']) ?></td>
-            <td><?= htmlspecialchar($row['total_cost']) ?></td>
-          </tr>
-            <?php } ?>
-        </table>
-
+  <div class = "row justify-content-between">
+    <?php foreach($GLOBALS['farmername'] as $row) {?>
+    <div class = "col-md-4 mb-4">
+      <div class="card text-bg-primary" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">Delivery status</h5>
+          <p class="card-text"><?= $row['status'] ?></p>
+        </div>
+      </div>
+    </div>
+    <div class = "col-md-4 mb-4">
+    <div class="card text-bg-success" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">Total Cost</h5>
+          <p class="card-text"><?= $row['total_cost'] ?></p>
+        </div>
+      </div>
+    </div>
+    <?php } ?>
+  </div>
       </div>
     </div>
   </div>
