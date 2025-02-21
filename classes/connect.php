@@ -6,7 +6,7 @@ class connection {
   private $password = "Sigei1738";
   private $dbname = "urbanlinktransport";
 
-protected function connect() {
+public function connect() {
 try{
   $rn = 'mysql:host='.$this->servername.';dbname='.$this->dbname;
   $conn = new PDO($rn, $this->username, $this->password);
