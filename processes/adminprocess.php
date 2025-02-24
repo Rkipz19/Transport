@@ -124,14 +124,14 @@ class adminprocess extends connection{
             $currentloaders = $stmt->fetch(PDO::FETCH_ASSOC)['total_loaders'];
 
             if($currentloaders >= $vehicle['max_loaders']){
-                $GLOBALS['max'] = "Cannot assign more loaders. Vehicle limit reached";
-            }
-
+                $GLOBALS['max'] = "<p class = 'text-danger text-center'>Cannot assign more loaders. Vehicle limit reached</p>";
+            }else{
             $sql = "INSERT INTO loaders(loaderName, identificationNumber,email,driverid) VALUES('$loadername', '$loaderid','$email','$assignedDriver')";
             $stmt = $this->connect()->prepare($sql);
             $stmt -> execute();
 
-            $GLOBALS['success'] = "Loader $loadername assigned to Driver #$assignedDriver.";
+            $GLOBALS['success'] = "<p class = 'text-success text-center'>Loader $loadername assigned to Driver #$assignedDriver.</p>";
+        }
 
 
         }

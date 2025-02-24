@@ -57,8 +57,8 @@ class staffprocess extends connection{
                  }catch(Exception $e){
                      echo "Message could not be sent. Mailer Error: {$mail->Error_Info}";
                  }
+                 $GLOBALS['msg'] = "Message has been sent, please check your email";
              }
-             $GLOBALS['msg'] = "Message has been sent, please check your email";
             }
          }
     

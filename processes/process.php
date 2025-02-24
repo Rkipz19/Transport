@@ -118,12 +118,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
         if($user){
         $_SESSION['firstname'] = $user['firstname'];
-          
-        $farmername = $user['firstname'];
-        $sql = "SELECT status,total_cost FROM `orders` WHERE `farmername` = '$farmername '";
+        $_SESSION['userid'] = $user['userid'];
+
+        $farmername = $_SESSION['firstname'];
+        $sql = "SELECT total_cost, status FROM orders WHERE farmername = '$farmername' ORDER BY orderedAt DESC LIMIT 1";
         $stmt = $this->connect()->prepare($sql);
         $stmt -> execute();
         $GLOBALS['farmername'] = $stmt->fetchAll();
+
         }else{
             echo "User not found";
         }
@@ -150,7 +152,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
         if($stmt->rowCount() > 0){
             $mail = require __DIR__ . '/mailer.php';
 
-            $mail->setFrom('Urbanlinktranport@example.com', 'Urbanlink Transport.com');
+            $mail->setFrom('Urbanlinktranport@gmail.com', 'Urbanlink Transport.com');
             $mail-> addAddress($email);
             $mail->Subject = 'Password Reset';
             $mail->Body = <<<END
@@ -267,21 +269,41 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             if($vehicle){
                 $vehicleid = $vehicle['vehicleid'];
 
-                $sql = "SELECT driverid,Status,category FROM drivers WHERE vehicleid = $vehicleid AND Status = 'Active' AND category = '$productdetails'";
+                $sql = "SELECT driverid,email,Status,category FROM drivers WHERE vehicleid = $vehicleid AND Status = 'Active' AND category = '$productdetails'";
                 $stmt = $this->connect()->prepare($sql);
                 $stmt -> execute();
                 $driver = $stmt->fetch(PDO::FETCH_ASSOC);
+                
             if($driver){
                 $driverid = $driver['driverid'];
+                $driveremail = $driver['email'];
 
                 $sql = "INSERT INTO orders (farmername, farmerphoneno,productdetails, weight, pickupLocation, deliveryLocation,distance_km,assigned_vehicle, assigned_driver, status) VALUES(
                     '$farmername','$farmerPhoneNo','$productdetails',$productweight,'$pickuplocation','$deliverylocation',$distance_km,$vehicleid,$driverid,'In progress')";
                 $stmt = $this->connect()->prepare($sql);
                 $stmt->execute();
-
+                
+                if($stmt){
+                    $mail = require __DIR__ . '/mailer.php';
+                    $mail->setFrom('Urbanlinktranport@gmail.com', 'Urbanlink Transport.com');
+                    $mail-> addAddress($driveremail);
+                    $mail-> Subject = 'New Order';
+                    $mail->Body = <<<END
+                    <p>You have been assigned a new order. Please check your dashboard for more details.</p>
+                    <p>Thank you,</p>
+                    <p>Urbanlink Transport</p>
+                    END;
+                    try{
+                        $mail->send();
+                    }catch(Exception $e){
+                        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+                    }
+                
+                
                 $this->connect()->prepare("UPDATE vehicle SET Status = 'In Transit' WHERE vehicleid = $vehicleid")->execute();
                     
-                    $GLOBALS['order'] = "<h5 class = 'text-success text-center'>Order placed successfully! Assigned driver: " . $driverid . "</h5>";
+                $GLOBALS['order'] = "<h5 class = 'text-success text-center'>Order placed successfully! Assigned driver: " . $driverid . "</h5>";
+                }
                 }else {
                     $GLOBALS['Nodriver'] = "<h5 class = 'text-danger text-center'>No driver is assigned to this vehicle.</h5>";
                 }
