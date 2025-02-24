@@ -36,3 +36,40 @@ body{
     object-fit:cover;
 }
 
+.sidebar{
+    position: fixed;
+    width:260px;
+    top: 60px;
+    height: 100%;
+}
+
+.chart{
+    max-width: 500px;
+    height: 450px;
+    padding: 50px;
+    margin:  0 auto;
+}
+.chart .chart_types{
+    text-align:center;
+    margin-bottom: 30px;
+}
+
+.chart .chart_types button{
+    padding: 10px 25px;
+}
+
+.nav-item .collapse.show,
+.nav-item .collapsing {
+    background-color: #152e4d;
+    border-radius: 5px;
+    min-width: 100px;
+    max-height: 150px;
+    overflow-y: auto;
+    position: fixed;
+    margin-top: -20px;
+    margin-left: 80px;
+}
+
+.dropdown-menu {
+    min-width: 40px;
+}
