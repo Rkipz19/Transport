@@ -1,3 +1,4 @@
+new DataTable('#table');
 
 document.getElementById("myButton").addEventListener("click", function() {
  const passwordInput = document.getElementById("password");
