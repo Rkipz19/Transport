@@ -89,3 +89,47 @@ function checkParamId($paramType){
     $result->execute();
     return $result;
  }
+
+ function getCount($table){
+    $conn = new connection();
+
+    $query = "SELECT * FROM $table";
+    $stmt = $conn->connect()->prepare($query);
+    $stmt->execute();
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC); 
+    $count = count($rows);
+    
+    echo $count;
+ }
+
+ function getByorderId($table,$id){
+    $conn = new connection();
+
+    $sql = "SELECT * FROM $table WHERE  orderid  = '$id' LIMIT 1";
+    $result = $conn->connect()->prepare($sql);
+    $result->execute();
+
+    if($result){
+        if($result->rowCount() == 1 ){
+            $row = $result->fetch(PDO::FETCH_ASSOC);
+            $response = [
+                'status' => 200,
+                'message' => 'successful',
+                'data'=> $row
+            ];
+            return $response;
+        }else{
+            $response = [
+                'status'=> 404,
+                'message'=> 'No record found'
+            ];
+            return $response;
+        }
+    }else{
+        $response = [
+            'status'=> 500,
+            'message'=> 'Something went wrong'
+        ];
+        return $response;
+    }
+ }
