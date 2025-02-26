@@ -3,5 +3,6 @@ require_once "AutoLoad.php";
 
 $Objlayout -> header();
 $ObjAdminProcesses -> adminpage_process();
-$ObjAdminForm -> adminpage();
+$Objadminpagelayout -> sidebar();
+$Objadminpagelayout -> rhscontent();
 $Objlayout -> footer();
