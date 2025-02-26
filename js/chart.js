@@ -1,26 +1,33 @@
-fetch('contents/orderschart.php')
-.then(response => response.json())
-.then(data => {
-  const labels = data.map(row=>row.distance_km);
-  const cost = data.map(row=>row.total_cost);
-})
-const ctx = document.getElementById('myChart');
+fetch('contents/chart.php')
+    .then(response => response.json())
+    .then(data => {
+        let labels = data.map(item => item.distance_km);
+        let values = data.map(item => item.total_cost);
 
-new Chart(ctx, {
-  type: 'bar',
-  data: {
-    labels: labels,
-    datasets: [{
-      label: 'Number of employees, Vehicles and Farmers',
-      data: cost,
-      borderWidth: 1
-    }]
-  },
-  options: {
-    scales: {
-      y: {
-        beginAtZero: true
-      }
-    }
-  }
-});
+        let ctx = document.getElementById('myChart');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Total Cost by Distance',
+                    data: values,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    })
+    .catch(error => console.error('Error fetching data:', error));
+
+
+  
