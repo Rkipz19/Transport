@@ -1,19 +1,21 @@
 <?php
-set_include_path(get_include_path() . PATH_SEPARATOR . 'C:\Apache24\htdocs\Transport\classes'); 
-require_once 'connect.php';
+require_once __DIR__ . '/../classes/connect.php';
 
-class orderchart{
+class ChartData {
+    private $db;
 
-public function getChartData(){
-$pdo = new connection();
-$sql = "SELECT * FROM orders";
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function __construct() {
+        $database = new connection();
+        $this->db = $database->connect();
+    }
+
+    public function getVehicleOrderCount() {
+        $query = "SELECT distance_km, total_cost FROM orders";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
 }
-}
-$chart = new orderchart();
-$results = $chart->getChartData();
-echo json_encode($results);
 ?>
+
