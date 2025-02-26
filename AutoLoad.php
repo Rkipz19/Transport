@@ -21,4 +21,5 @@ $ObjAdminForm = new adminForms();
 $ObjProcesses = new process();
 $ObjStaffForm = new staffform();
 $ObjStaffProcess = new staffprocess();
+$Objadminpagelayout = new adminpage();
 
