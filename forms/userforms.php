@@ -135,42 +135,45 @@ class userForms{
  
  public function userpage(){
   ?>
- <div class = "container-fluid">
-    <div class = "row flex-nowrap">
-      <div class = "col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
-        <div class = "d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
-          <a href = "/" class = "d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-            <span class = "fs-4 d-none d-sm-inline align-middle">Menu</span>
-          </a>
-          <ul class = "nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id ="menu">
-            <li class = "nav-item">
-              <a href = "" class = "nav-link align-middle px-0">
-              <i class="bi bi-house"></i></i><span class = "ms-1 d-none d-sm-inline">Home</span>
-              </a>
-            </li>
-            <li class = "nav-item">
-              <a href = "order.php" class = "nav-link align-middle px-0">
-              <i class="bi bi-truck"></i><span class = "ms-1 d-none d-sm-inline">Order</span>
-              </a>
-            </li>
-          </ul>
-          <hr>
-          <div class = "dropdown pb-4">
-            <a href = "" class = "d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-              <img src = "images/driver.jpg" alt = "" width = "30" height = "30" class ="rounded-circle">
-                <span class = "d-none d-sm-inline mx-1"><?php echo $_SESSION['firstname'] ?></span>
-            </a>
-            <ul class = "dropdown-menu dropdown-menu-dark text-small shadow">
-              <li><a class = "dropdown-item" href = "userprofile.php">Profile</a></li>
-              <li>
-                <hr class ="dropdown-divider">
-              </li>
-              <li><a class = "dropdown-item" href = "userlogout.php">Sign Out</a></li>
-            </ul>
-          </div>
+ <div class="container-fluid overflow-hidden">
+  <div class="row g-0 vh-100 overflow-y-auto">
+        <div class="col-2 col-sm-3 col-xl-2 d-flex fixed-top" id="sidebar">
+            <div class="d-flex flex-column flex-grow-1 align-items-center align-items-sm-start bg-dark px-2 px-sm-3 py-2 text-white vh-100 overflow-auto">
+                <a href="/" class="d-flex align-items-center pb-sm-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                    <span class="fs-5">U<span class="d-none d-sm-inline">rban Link Transport</span></span>
+                </a>
+                <ul class="nav nav-pills flex-column flex-nowrap flex-shrink-1 flex-sm-grow-0 flex-grow-1 mb-sm-auto mb-0 justify-content-center align-items-center align-items-sm-start" id="menu">
+                    <li class="nav-item">
+                        <a href="userpage.php" class="nav-link">
+                            <i class="fs-5 bi-house"></i><span class="ms-1 d-none d-sm-inline">Home</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="order.php" class="nav-link">
+                            <i class="fs-5 bi-table"></i><span class="ms-1 d-none d-sm-inline">Order</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="dropup py-sm-4 py-1 mt-sm-auto ms-auto ms-sm-0 flex-shrink-1">
+                    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://github.com/mdo.png" alt="hugenerd" width="28" height="28" class="rounded-circle">
+                        <span class="d-none d-sm-inline mx-1"><?php echo $_SESSION['firstname'] ?></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark px-0 px-sm-2 text-center text-sm-start" aria-labelledby="dropdownUser1">
+                        <li><a class="dropdown-item px-1" href="userprofile.php"><i class="fs-6 bi-binoculars"></i><span class="d-none d-sm-inline ps-1">Profile</span></a></li>
+                        <li><a class="dropdown-item px-1" href="userlogout.php"><i class="fs-6 bi-bookmark"></i><span class="d-none d-sm-inline ps-1">Sign out</span></a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class = "col py-3">
+        <?php
+ }
+
+public function main(){
+      ?>
+    <div class="col offset-2 offset-sm-3 offset-xl-2 d-flex flex-column vh-100">
+    <main class="row overflow-auto">
+    <div class="col pt-3">
       <h5 class= "text-center">Welcome <?php echo $_SESSION['firstname'] ?> to Urban Link Transport!</h5>
   <div class = "row justify-content-between">
     <?php foreach($GLOBALS['farmername'] as $row) {?>
@@ -191,10 +194,59 @@ class userForms{
       </div>
     </div>
     <?php } ?>
-  </div>
+  <div class="card">
+              <div class = "card-header">
+                <h4>
+                  Orders
+                </h4>
+              </div>
+              <div class="card-body">
+                <table id="myTable" class=" w-25 table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th>Id</th>
+                      <th>farmername</th>
+                      <th>productdetails</th>
+                      <th>Weight</th>
+                      <th>PickupLocation</th>
+                      <th>Delivery Location</th>
+                      <th>Status</th>
+                      <th>Ordered date</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                        <?php 
+                            $orders = getUserOrder($_SESSION['firstname']);
+                                if($orders){
+                                    foreach($orders as $order){
+                        ?>
+                        <tr>
+                            <td><?= $order['orderid'] ?></td>
+                            <td><?= $order['farmername'] ?></td>
+                            <td><?= $order['productdetails'] ?></td>
+                            <td><?= $order['weight'] ?></td>
+                            <td><?= $order['pickupLocation'] ?></td>
+                            <td><?= $order['deliveryLocation'] ?></td>
+                            <td><?= $order['status'] ?></td>
+                            <td><?= $order['orderedAt'] ?></td>
+                            <td>
+                              <a href="user-orderview.php?orderid=<?= $order['orderid']; ?>" class = "btn btn-success mb-3" role = "button">View</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <?php }
+                        } ?>
+                </table>
+              </div>
+          </div>
       </div>
     </div>
+<!---End-->
+    </div>
+  </main>
   </div>
+  
 <?php
  }
 
@@ -289,8 +341,10 @@ public function profile(){
 
 public function orders(){
   ?>
-   <div class = "container d-flex justify-content-center align-items-center min-vh-100">
-    <div class = "border rounded-5 p-3 bg-dark.bg-gradient shadow box-area">
+<div class="col offset-2 offset-sm-3 offset-xl-2 d-flex flex-column vh-100">
+<main class="row overflow-auto">
+  <div class="col pt-3">
+    <div class = "border rounded-5 p-3 bg-dark.bg-gradient shadow box-area mx-3">
         <form method = "POST">
           <div class = "mb-3">
             <h1 style = "text-align:center">Order placement <i class="bi bi-truck-flatbed"></i></h1>
@@ -339,8 +393,102 @@ public function orders(){
         </form>
 </div>
 </div>
+</main>
+</div>
+
   <?php
 }
+
+public function uservieworder(){
+  ?>
+  
+<div class="col offset-2 offset-sm-3 offset-xl-2 d-flex flex-column vh-100">
+  <main class="row overflow-auto">
+    <div class="col pt-3">
+      <div class="card" style = "width: 20rem;">
+        <div class="card-header">
+          <h4>View Order
+            <a href="userpage.php" class = "btn btn-danger btn-sm mb-0 float-end">Back</a>
+          </h4>
+          <div class="card-body">
+          <?php
+                $paramResult = checkParamId('orderid');
+                if(!is_numeric($paramResult)){
+                echo '<h5>'.$paramResult.'</h5>';
+                return false;
+                }
+
+                $order = getByorderId('orders',checkParamId('orderid'));
+                if($order['status'] == 200){
+              ?>
+          <table class = "table table-bordered table-striped">
+              <tbody>
+                <tr>
+                  <td>Orderid</td>
+                  <td><?= $order['data']['orderid'] ?></td>
+                </tr>
+                <tr>
+                  <td>Farmername</td>
+                  <td><?= $order['data']['farmername'] ?></td>
+                </tr>
+                <tr>
+                  <td>Farmer PhoneNumber</td>
+                  <td><?= $order['data']['farmerphoneno'] ?></td>
+                </tr>
+                <tr>
+                  <td>Product details</td>
+                  <td><?= $order['data']['productdetails'] ?></td>
+                </tr>
+                <tr>
+                  <td>Pickup Location</td>
+                  <td><?= $order['data']['pickupLocation'] ?></td>
+                </tr>
+                <tr>
+                  <td>Delivery Location</td>
+                  <td><?= $order['data']['deliveryLocation'] ?></td>
+                </tr>
+                <tr>
+                  <td>Distance in km</td>
+                  <td><?= $order['data']['distance_km'] ?></td>
+                </tr>
+                <tr>
+                  <td>Assigned Vehicle</td>
+                  <td><?= $order['data']['assigned_vehicle'] ?></td>
+                </tr>
+                <tr>
+                  <td>Assigned Driver</td>
+                  <td><?= $order['data']['assigned_driver'] ?></td>
+                </tr>
+                <tr>
+                  <td>Status</td>
+                  <td><?= $order['data']['status'] ?></td>
+                </tr>
+                <tr>
+                  <td>Total Cost</td>
+                  <td><?= $order['data']['total_cost'] ?></td>
+                </tr>
+                <tr>
+                  <td>Order Date</td>
+                  <td><?= $order['data']['orderedAt'] ?></td>
+                </tr>
+              </tbody>
+            </table>
+                  <?php
+                }else{
+                  echo '<h5>No Records Found</h5>';
+                }
+                  ?>
+          </div>
+        </div>
+      </div>
+      </div>
+</main>
+</div>
+    
+  
+  <?php
+}
+
 }
 
 

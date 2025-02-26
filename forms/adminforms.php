@@ -50,8 +50,10 @@ class adminForms extends connection{
 
      public function registerVehicle(){
       ?>
-<div class = "container d-flex justify-content-center align-items-center min-vh-100">
-<div class = "border rounded-5 p-3 bg-white shadow box-area">
+<div class="col offset-2 offset-sm-3 offset-xl-2 d-flex flex-column vh-100">
+<main class="row overflow-auto">
+<div class="col pt-3">
+<div class = "border rounded-5 p-3 bg-white shadow box-area mx-3">
 <form method = "POST">
   <div class = "mb-3">
     <h1 style = "text-align:center">Vehicle Registration</h1>
@@ -85,18 +87,21 @@ class adminForms extends connection{
   </div>
   <div class = "mb-3 justify-content-center">
   <button type="submit" class="btn btn-primary">Submit</button>
-  <a href = "adminpage.php" class = "btn btn-secondary" role = "button">Back</a>
   </div>
 </form>
 </div>
+</div>
+</main>
 </div>
       <?php
      }
 
      public function registerDriver(){
       ?>
-      <div class = "container d-flex justify-content-center align-items-center min-vh-100">
-<div class = "border rounded-5 p-3 bg-white shadow box-area">
+<div class="col offset-2 offset-sm-3 offset-xl-2 d-flex flex-column vh-100">
+<main class="row overflow-auto">
+<div class="col pt-3">
+<div class = "border rounded-5 p-3 bg-white shadow box-area mx-3">
 <form method = "POST">
   <div class = "mb-3">
     <h1 style = "text-align:center">Driver Registration</h1>
@@ -149,17 +154,20 @@ class adminForms extends connection{
     <input type="password" class="form-control" id="dcpassword" name="cpassword" placeholder = "Confirm password">
   </div>
   <button type="submit" class="btn btn-primary">Submit</button>
-  <a href = "adminpage.php" class = "btn btn-secondary" role = "button">Back</a>
 </form>
 </div>
+</div>
+</main>
 </div>
       <?php
      }
 
   public function registerLoader(){
   ?>
-  <div class = "container d-flex justify-content-center align-items-center min-vh-100">
-<div class = "border rounded-5 p-3 bg-white shadow box-area">
+<div class="col offset-2 offset-sm-3 offset-xl-2 d-flex flex-column vh-100">
+<main class="row overflow-auto">
+<div class="col pt-3">
+<div class = "border rounded-5 p-3 bg-white shadow box-area mx-3">
 <form method = "POST">
   <div class = "mb-3">
     <h1 style = "text-align:center">Loader Registration</h1>
@@ -196,15 +204,19 @@ class adminForms extends connection{
   </div>
   <div class = "d-grid col-6 mx-auto">
   <button type="submit" class="btn btn-primary mb-3">Submit</button>
-  <a href = "adminpage.php" role = "button" class = "btn btn-secondary">Back</a>
   </div>
 </form>
 </div>
+</div>
+</main>
 </div>
   <?php
   }
   public function editvehicle(){
     ?>
+    <div class="col offset-2 offset-sm-3 offset-xl-2 d-flex flex-column vh-100">
+    <main class="row overflow-auto">
+    <div class="col pt-3">
   <div class = "card">
   <form method = "POST" class="row g-3" action = "code.php">
     <?php
@@ -248,6 +260,117 @@ class adminForms extends connection{
       echo '<h5>'.$vehicle['message'].'</h5>';
     }
     ?>
+  </div>
+  </main>
+  </div>
+    <?php
+  }
+
+  public function editloader(){
+    ?>
+    <div class="col offset-2 offset-sm-3 offset-xl-2 d-flex flex-column vh-100">
+    <main class="row overflow-auto">
+    <div class="col pt-3">
+  <div class = "card">
+  <form method = "POST" class="row g-3" action = "code.php">
+    <?php
+    $paramResult = checkParamId('loaderid');
+    if(!is_numeric($paramResult)){
+      echo '<h5>'.$paramResult.'</h5>';
+      return false;
+    }
+
+    $loader = getByloaderid('loaders',checkParamId('loaderid'));
+    if($loader['status'] == 200){
+      ?>
+    <input type="hidden" name = "userId" value = "<?= $loader['data']['loaderid']?>" required>
+    <div class="col-md-6">
+    <label for="inputType" class="form-label">Loader's Na,e</label>
+    <input type="text" class="form-control" id="inputType" name = "vehicletype" value = "<?= $loader['data']['loaderName']?>" required>
+  </div>
+  <div class="col-md-6">
+    <label for="inputPlate" class="form-label">Loader's Id</label>
+    <input type="text" class="form-control" id="inputPlate" name = "vehicleplate" value = "<?= $loader['data']['identificationNumber'] ?>" required>
+  </div>
+  <div class="col-12">
+    <label for="inputloaders" class="form-label">Loader's Email</label>
+    <input type="text" class="form-control" id="inputloaders" name = "maxloaders" value = "<?= $loader['data']['email'] ?>" required>
+  </div>
+  <div class="col-12">
+    <label for="inputcapacity" class="form-label">Assigned Driver</label>
+    <input type="text" class="form-control" id="inputcapacity" name = "loadcapacity" value = "<?= $loader['data']['driverid'] ?>" required>
+  </div>
+  <div class="col-12 float-end">
+    <button type="submit" name = "updateLoader" class="btn btn-primary">Update</button>
+  </div>
+</form>
+  </div>
+      <?php
+    }else{
+      echo '<h5>'.$loader['message'].'</h5>';
+    }
+    ?>
+  </div>
+  </main>
+  </div>
+    <?php
+  }
+
+  public function editdriver(){
+    ?>
+       <div class="col offset-2 offset-sm-3 offset-xl-2 d-flex flex-column vh-100">
+    <main class="row overflow-auto">
+    <div class="col pt-3">
+  <div class = "card">
+  <form method = "POST" class="row g-3" action = "code.php">
+    <?php
+    $paramResult = checkParamId('driverid');
+    if(!is_numeric($paramResult)){
+      echo '<h5>'.$paramResult.'</h5>';
+      return false;
+    }
+
+    $driver = getBydriverid('drivers',checkParamId('driverid'));
+    if($driver['status'] == 200){
+      ?>
+    <input type="hidden" name = "userId" value = "<?= $driver['data']['driverid']?>" required>
+    <div class="col-md-6">
+    <label for="inputType" class="form-label">Driver Name</label>
+    <input type="text" class="form-control" id="inputType" name = "drivername" value = "<?= $driver['data']['drivername']?>" required>
+  </div>
+  <div class="col-md-6">
+    <label for="inputPlate" class="form-label">Driver's license</label>
+    <input type="text" class="form-control" id="inputPlate" name = "license" value = "<?= $driver['data']['license'] ?>" required>
+  </div>
+  <div class="col-12">
+    <label for="inputloaders" class="form-label">Driver's email</label>
+    <input type="text" class="form-control" id="inputloaders" name = "email" value = "<?= $driver['data']['email'] ?>" required>
+  </div>
+  <div class="col-12">
+    <label for="inputcapacity" class="form-label">Transportation category</label>
+    <input type="text" class="form-control" id="inputcapacity" name = "category" value = "<?= $driver['data']['category'] ?>" required>
+  </div>
+  <div class="col-12">
+    <label for="inputcapacity" class="form-label">Assigned vehicle</label>
+    <input type="number" class="form-control" id="inputcapacity" name = "vehicleid" value = "<?= $driver['data']['vehicleid'] ?>" required>
+  </div>
+  <div class="col-md-6">
+    <label for="inputstatus" class="form-label">Status</label>
+    <input type="text" class="form-control" id="inputstatus" name = "status" value = "<?= $driver['data']['Status'] ?>" required>
+  </div>
+  <div class="col-12 float-end">
+    <button type="submit" name = "updateDriver" class="btn btn-primary">Update</button>
+  </div>
+</form>
+  </div>
+      <?php
+    }else{
+      echo '<h5>'.$driver['message'].'</h5>';
+    }
+    ?>
+  </div>
+  </main>
+  </div>
     <?php
   }
 }
